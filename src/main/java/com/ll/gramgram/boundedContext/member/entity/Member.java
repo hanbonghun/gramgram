@@ -1,16 +1,16 @@
 package com.ll.gramgram.boundedContext.member.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.cglib.core.Local;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -20,6 +20,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @ToString
 @EntityListeners(AuditingEntityListener.class)
 @Entity
+@Getter
 public class Member {
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -31,7 +32,14 @@ public class Member {
     @LastModifiedDate
     private LocalDateTime modifyDate;
 
+    @Column(unique = true)
     private String username;
     private String password;
+
+    public List<? extends GrantedAuthority> getGrantedAuthorities(){
+        List<GrantedAuthority> grantedAuthorityList = new ArrayList<>();
+
+        return grantedAuthorityList;
+    }
 
 }
