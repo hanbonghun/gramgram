@@ -20,10 +20,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String showMain(Model model, Principal principal){
-        if (principal != null) {
-            Member loginedMember = memberService.findByUsername(principal.getName()).orElseThrow();
-            model.addAttribute("loginedMember", loginedMember);
-        }
+
         return "usr/home/main";
     }
 
