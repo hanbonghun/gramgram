@@ -19,7 +19,7 @@ public class HomeController {
     private final MemberService memberService;
 
     @GetMapping("/")
-    public String showMain(Model model, Principal principal){
+    public String showMain(){
 
         return "usr/home/main";
     }
