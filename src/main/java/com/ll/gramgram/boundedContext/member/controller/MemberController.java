@@ -40,4 +40,8 @@ public class MemberController {
         memberService.join(joinForm.getUsername(), joinForm.getPassword());
         return "redirect:/";
     }
+
+    @GetMapping("/login")
+    public String showLogin() {
+        return "usr/member/login";}
 }
