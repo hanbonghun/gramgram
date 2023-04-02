@@ -10,13 +10,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
 import static org.hamcrest.Matchers.containsString;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest // 스프링부트 관련 컴포넌트 테스트할 때 붙여야 함, Ioc 컨테이너 작동시킴
@@ -68,5 +67,67 @@ public class MemberControllerTests {
                 .andExpect(handler().handlerType(MemberController.class))
                 .andExpect(handler().methodName("join"))
                 .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    @DisplayName("회원가입시에 올바른 데이터를 넘기지 않으면 400")
+    void t003() throws Exception {
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(post("/member/join")
+                        .with(csrf()) // CSRF 키 생성
+                        .param("username", "user10")
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(MemberController.class))
+                .andExpect(handler().methodName("join"))
+                .andExpect(status().is4xxClientError());
+
+        // WHEN
+        resultActions = mvc
+                .perform(post("/member/join")
+                        .with(csrf()) // CSRF 키 생성
+                        .param("password", "1234")
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(MemberController.class))
+                .andExpect(handler().methodName("join"))
+                .andExpect(status().is4xxClientError());
+
+        // WHEN
+        resultActions = mvc
+                .perform(post("/member/join")
+                        .with(csrf()) // CSRF 키 생성
+                        .param("username", "user10" + "a".repeat(30))
+                        .param("password", "1234")
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(MemberController.class))
+                .andExpect(handler().methodName("join"))
+                .andExpect(status().is4xxClientError());
+
+        // WHEN
+        resultActions = mvc
+                .perform(post("/member/join")
+                        .with(csrf()) // CSRF 키 생성
+                        .param("username", "user10")
+                        .param("password", "1234" + "a".repeat(30))
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(MemberController.class))
+                .andExpect(handler().methodName("join"))
+                .andExpect(status().is4xxClientError());
     }
 }
