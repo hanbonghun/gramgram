@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -37,9 +38,13 @@ public class Member {
     private String password;
 
     public List<? extends GrantedAuthority> getGrantedAuthorities(){
-        List<GrantedAuthority> grantedAuthorityList = new ArrayList<>();
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        grantedAuthorities.add(new SimpleGrantedAuthority("member"));
 
-        return grantedAuthorityList;
+        if ("admin".equals(username)) {
+            grantedAuthorities.add(new SimpleGrantedAuthority("admin"));
+        }
+        return grantedAuthorities;
     }
 
 }
