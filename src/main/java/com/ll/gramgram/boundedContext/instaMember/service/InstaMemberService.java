@@ -4,6 +4,7 @@ import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.instaMember.repository.InstaMemberRepository;
 import com.ll.gramgram.boundedContext.member.entity.Member;
+import com.ll.gramgram.boundedContext.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class InstaMemberService {
     private final InstaMemberRepository instaMemberRepository;
+    private final MemberService memberServie;
 
     public Optional<InstaMember> findByUsername(String username) {
         return instaMemberRepository.findByUsername(username);
@@ -23,12 +25,13 @@ public class InstaMemberService {
     @Transactional
     public RsData<InstaMember> connect(Member member, String username, String gender) {
         if (findByUsername(username).isPresent()) {
+            System.out.println("이미");
             return RsData.of("F-1", "해당 인스타그램 아이디는 이미 다른 사용자와 연결되었습니다.");
         }
 
         RsData<InstaMember> instaMemberRsData = create(username, gender);
 
-        member.setInstaMember(instaMemberRsData.getData());
+        memberServie.updateInstaMember(member, instaMemberRsData.getData());
 
         return instaMemberRsData;
     }
