@@ -29,7 +29,9 @@
   - [x] 두루두루 사용되는 CSS 를 common.css 로 모으기
   - [x] 두루두루 사용되는 JS 를 common.js 로 모으기
 - [x] toastMsg 에 ttl 기능 추가
-
+- [ ] 인스타그램 회원정보 입력
+  - [ ] 아이디 
+  - [ ] 성별 
 <hr>
 # gramgram
 
