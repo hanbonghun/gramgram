@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -185,8 +186,8 @@ public class MemberControllerTests {
         // 세션에 접근해서 user 객체를 가져온다.
         MvcResult mvcResult = resultActions.andReturn();
         HttpSession session = mvcResult.getRequest().getSession(false);// 원래 getSession 을 하면, 만약에 없을 경우에 만들어서라도 준다., false 는 없으면 만들지 말라는 뜻
-        SecurityContext securityContext = (SecurityContext)session.getAttribute("SPRING_SECURITY_CONTEXT");
-        User user = (User)securityContext.getAuthentication().getPrincipal();
+        SecurityContext securityContext = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
+        User user = (User) securityContext.getAuthentication().getPrincipal();
 
         assertThat(user.getUsername()).isEqualTo("user1");
 
@@ -196,10 +197,12 @@ public class MemberControllerTests {
                 .andExpect(redirectedUrlPattern("/**"));
 
     }
+
     @Test
     // @Rollback(value = false) // DB에 흔적이 남는다.
     @DisplayName("로그인 후에 내비바에 로그인한 회원의 username")
-    @WithUserDetails("user1") // user1로 로그인 한 상태로 진행
+    @WithUserDetails("user1")
+        // user1로 로그인 한 상태로 진행
     void t006() throws Exception {
         // WHEN
         ResultActions resultActions = mvc

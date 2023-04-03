@@ -12,17 +12,18 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly=true) // 아래 메서드는 전부 readOnly
+@Transactional(readOnly = true) // 아래 메서드는 전부 readOnly
 public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
+
     public Optional<Member> findByUsername(String username) {
         return memberRepository.findByUsername(username);
     }
 
     @Transactional
     public RsData<Member> join(String username, String password) {
-        if ( findByUsername(username).isPresent() ) {
+        if (findByUsername(username).isPresent()) {
             return RsData.of("F-1", "해당 아이디(%s)는 이미 사용중입니다.".formatted(username));
         }
         Member member = Member
